@@ -1,1 +1,2 @@
-# otus_java_2019_03
+Kuzmicheva Lyuda (Кузьмичева Люда)
+kuzmicheva.lyudmila@gmail.com
