@@ -8,12 +8,12 @@
     <parent>
         <groupId>ru.otus</groupId>
         <artifactId>OtusJavaHW</artifactId>
-        <version>2018-06-SNAPSHOT</version>
+        <version>2019-04-SNAPSHOT</version>
     </parent>
 
 
-    <artifactId>L01-maven</artifactId>
-    <name>L01-maven</name>
+    <artifactId>hw01-maven</artifactId>
+    <name>hw01-maven</name>
 
     <dependencies>
         <dependency>
@@ -37,7 +37,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ru.otus.l011.Main</mainClass>
+                            <mainClass>HelloOtus</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
