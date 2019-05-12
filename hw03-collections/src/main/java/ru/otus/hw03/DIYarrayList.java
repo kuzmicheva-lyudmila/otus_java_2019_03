@@ -46,6 +46,7 @@ public class DIYarrayList<T> implements List<T>{
     }
 
     T elementData(int index) {
+        rangeCheck(index);
         return (T) elementData[index];
     }
 
@@ -62,7 +63,6 @@ public class DIYarrayList<T> implements List<T>{
     }
 
     public boolean contains(Object o) {
-        //return false;
         throw new UnsupportedOperationException();
     }
 
@@ -75,7 +75,6 @@ public class DIYarrayList<T> implements List<T>{
     }
 
     public <T1> T1[] toArray(T1[] a) {
-        //return null;
         throw new UnsupportedOperationException();
     }
 
@@ -88,54 +87,31 @@ public class DIYarrayList<T> implements List<T>{
     }
 
     public boolean remove(Object o) {
-        //return false;
         throw new UnsupportedOperationException();
     }
 
     public boolean containsAll(Collection<?> c) {
-        //return false;
         throw new UnsupportedOperationException();
     }
 
     public boolean addAll(Collection<? extends T> c) {
-        //return false;
         throw new UnsupportedOperationException();
     }
 
-    private void rangeCheckForAdd(int index) {
+    private void rangeCheck(int index) {
         if (index > size || index < 0)
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
     }
 
     public boolean addAll(int index, Collection<? extends T> c) {
-        rangeCheckForAdd(index);
-
-        Object[] a = c.toArray();
-        int numNew = a.length;
-        if (numNew == 0)
-            return false;
-        Object[] elementData;
-        final int s;
-        if (numNew > (elementData = this.elementData).length - (s = size))
-            elementData = grow(s + numNew);
-
-        int numMoved = s - index;
-        if (numMoved > 0)
-            System.arraycopy(elementData, index,
-                    elementData, index + numNew,
-                    numMoved);
-        System.arraycopy(a, 0, elementData, index, numNew);
-        size = s + numNew;
-        return true;
+        throw new UnsupportedOperationException();
     }
 
     public boolean removeAll(Collection<?> c) {
-        //return false;
         throw new UnsupportedOperationException();
     }
 
     public boolean retainAll(Collection<?> c) {
-        //return false;
         throw new UnsupportedOperationException();
     }
 
@@ -160,17 +136,14 @@ public class DIYarrayList<T> implements List<T>{
     }
 
     public T remove(int index) {
-        //return null;
         throw new UnsupportedOperationException();
     }
 
     public int indexOf(Object o) {
-        //return 0;
         throw new UnsupportedOperationException();
     }
 
     public int lastIndexOf(Object o) {
-        //return 0;
         throw new UnsupportedOperationException();
     }
 
@@ -179,12 +152,10 @@ public class DIYarrayList<T> implements List<T>{
     }
 
     public ListIterator<T> listIterator(int index) {
-        //return null;
         throw new UnsupportedOperationException();
     }
 
     public List<T> subList(int fromIndex, int toIndex) {
-        //return null;
         throw new UnsupportedOperationException();
     }
 
@@ -276,29 +247,19 @@ public class DIYarrayList<T> implements List<T>{
         }
     }
 
-    public void print() {
-        for (int i = 0; i < DIYarrayList.this.size; i++) {
-            System.out.print(DIYarrayList.this.get(i) + " ");
+    public String toString() {
+        Iterator<T> it = iterator();
+        if (! it.hasNext())
+            return "[]";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for (;;) {
+            T t = it.next();
+            sb.append(t);
+            if (! it.hasNext())
+                return sb.append(']').toString();
+            sb.append(',').append(' ');
         }
-        System.out.println("");
-    }
-
-
-    public static void main(String[] args) {
-        DIYarrayList<Integer> myDIYArrayList = new DIYarrayList<>();
-
-        List<Integer> newList = new ArrayList<>();
-        for (int i = 1; i<=25; i++)
-            newList.add(i);
-
-        myDIYArrayList.addAll(0, newList);
-        myDIYArrayList.print();
-
-        Collections.copy(myDIYArrayList, newList);
-        myDIYArrayList.print();
-
-        myDIYArrayList.add(13);
-        Collections.sort(myDIYArrayList);
-        myDIYArrayList.print();
     }
 }
