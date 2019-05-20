@@ -1,9 +1,12 @@
 package ru.otus.hw;
 
+import ru.otus.hw.annotations.*;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class TestRunner {
     public static void main(String[] args) {
@@ -28,9 +31,20 @@ public class TestRunner {
 
         // заполнение массивов с методами
         for (Method method : testClass.getDeclaredMethods()) {
-            if ((method.getModifiers() & Modifier.STATIC) != 0) {
-                if (method.isAnnotationPresent(BeforeAll.class)) { arrBeforeAllMethods.add(method); }
-                if (method.isAnnotationPresent(AfterAll.class)) { arrAfterAllMethods.add(method); }
+            if (method.isAnnotationPresent(BeforeAll.class)) {
+                if ((method.getModifiers() & Modifier.STATIC) != 0) {
+                    arrBeforeAllMethods.add(method);
+                } else {
+                    Logger.getGlobal().info("Annotation BeforeAll only use on static method. Method [" + method.getName() + "] isn't static");
+                }
+            }
+
+            if (method.isAnnotationPresent(AfterAll.class)) {
+                if ((method.getModifiers() & Modifier.STATIC) != 0) {
+                    arrAfterAllMethods.add(method);
+                } else {
+                    Logger.getGlobal().info("Annotation AfterAll only use on static method. Method [" + method.getName() + "] isn't static");
+                }
             }
 
             if (method.isAnnotationPresent(Before.class)) { arrBeforeMethods.add(method); }

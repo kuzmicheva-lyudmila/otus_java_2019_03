@@ -1,5 +1,7 @@
 package ru.otus.hw;
 
+import ru.otus.hw.annotations.*;
+
 public class AnnotationsTest {
 
     AnnotationsTest() {
@@ -7,7 +9,7 @@ public class AnnotationsTest {
     }
 
     @BeforeAll
-    static void beforeAllTest() { System.out.println("BeforeAllTest"); }
+    void beforeAllTest() { System.out.println("BeforeAllTest"); }
 
     @AfterAll
     static void afterAllTest() {
