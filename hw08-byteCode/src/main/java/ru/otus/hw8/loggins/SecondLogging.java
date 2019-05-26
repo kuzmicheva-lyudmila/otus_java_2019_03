@@ -1,5 +1,5 @@
 package ru.otus.hw8.loggins;
 
-public interface Loggins2 {
+public interface SecondLogging {
     public void calculation();
 }

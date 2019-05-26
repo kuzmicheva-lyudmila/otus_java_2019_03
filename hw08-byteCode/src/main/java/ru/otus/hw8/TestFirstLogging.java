@@ -1,25 +1,25 @@
 package ru.otus.hw8;
 
 import ru.otus.hw8.annotations.Log;
-import ru.otus.hw8.loggins.Loggins1;
+import ru.otus.hw8.loggins.FirstLogging;
 
-public class TestLogging1 implements Loggins1 {
+public class TestFirstLogging implements FirstLogging {
     @Log
     public void calculation(int param) {
         System.out.println("invoke TestLogging1.calculation");
     }
 
-    public void calculation_without_log(int param1, String param2) {
+    public void calculationWithoutLog(int param1, String param2) {
         System.out.println("invoke TestLogging1.calculation_without_log");
     }
 
     @Log
-    public void calculation2(int param1, String param2) {
+    public void calculationWithDiffParams(int param1, String param2) {
         System.out.println("invoke TestLogging1.calculation2");
     }
 
     @Log
-    public void calculation2(int param1) {
+    public void calculationWithDiffParams(int param1) {
         System.out.println("invoke TestLogging1.calculation2");
     }
 }
