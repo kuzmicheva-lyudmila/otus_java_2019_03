@@ -3,6 +3,9 @@ package ru.otus.cw.cache;
 import lombok.Builder;
 import lombok.Data;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 @Data
 @Builder
 public class Operation {
