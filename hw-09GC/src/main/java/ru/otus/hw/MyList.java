@@ -2,6 +2,7 @@ package ru.otus.hw;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MyList {
@@ -14,26 +15,20 @@ public class MyList {
     }
 
     public void run() throws Exception {
-        List<Integer> arrayList = new ArrayList<>();
+        LinkedList<Integer> linkedList = new LinkedList<>();
 
         for (int i = 0; i < this.step; i++) {
             Integer[] integerArrayCopy = new Integer[this.size];
             Integer[] integerArrayDel = new Integer[(int)(this.size / 2) + 1];
 
-            for (int k = 0; k < integerArrayCopy.length; k++) {
-                integerArrayCopy[k] = k;
-                if (k < integerArrayDel.length) {
-                    integerArrayDel[k] = k;
+            for (int k = 0; k < this.size; k++) {
+                linkedList.addFirst(Integer.valueOf(k));
+                if (k % 2 == 0) {
+                    linkedList.removeLast();
                 }
             }
 
-            List<Integer> integerArrayListCopy = new ArrayList<Integer>(Arrays.asList(integerArrayCopy));
-            arrayList.addAll(integerArrayListCopy);
-
-            List<Integer> integerArrayListDel = new ArrayList<Integer>(Arrays.asList(integerArrayDel));
-            arrayList.removeAll(integerArrayListDel);
-
-            System.out.println("step = " + i + " size = " + arrayList.size());
+            System.out.println("step = " + i + " size = " + linkedList.size());
             this.size = this.size * 2;
 
             Thread.sleep(500);
