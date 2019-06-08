@@ -1,9 +1,6 @@
 package ru.otus.hw;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
 public class MyList {
     private int size;
@@ -18,9 +15,6 @@ public class MyList {
         LinkedList<Integer> linkedList = new LinkedList<>();
 
         for (int i = 0; i < this.step; i++) {
-            Integer[] integerArrayCopy = new Integer[this.size];
-            Integer[] integerArrayDel = new Integer[(int)(this.size / 2) + 1];
-
             for (int k = 0; k < this.size; k++) {
                 linkedList.addFirst(Integer.valueOf(k));
                 if (k % 2 == 0) {
