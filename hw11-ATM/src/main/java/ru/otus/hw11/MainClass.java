@@ -1,7 +1,8 @@
-package ru.otus;
+package ru.otus.hw11;
+
+import ru.otus.hw11.ATM;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class MainClass {
     public static void main(String[] args) {

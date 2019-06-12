@@ -1,7 +1,6 @@
-package ru.otus;
+package ru.otus.hw11;
 
-import ru.otus.interfaces.UseATM;
-import ru.otus.interfaces.UseCell;
+import ru.otus.hw11.interfaces.UseATM;
 
 import java.util.*;
 

@@ -1,6 +1,4 @@
-package ru.otus.interfaces;
-
-import ru.otus.NominalOfBanknote;
+package ru.otus.hw11.interfaces;
 
 public interface UseCell {
     public void putBanknotes(int count); // положить банкноты в ячейку

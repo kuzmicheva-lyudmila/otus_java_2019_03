@@ -1,4 +1,4 @@
-package ru.otus.interfaces;
+package ru.otus.hw11.interfaces;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package ru.otus;
+package ru.otus.hw11;
 
-import ru.otus.interfaces.UseCell;
+import ru.otus.hw11.interfaces.UseCell;
 
 public class CellOfATM implements UseCell {
     private int count;  // Количество в ячейкк

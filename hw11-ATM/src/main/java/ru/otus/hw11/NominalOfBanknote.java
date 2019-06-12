@@ -1,4 +1,4 @@
-package ru.otus;
+package ru.otus.hw11;
 
 public class NominalOfBanknote implements Comparable<NominalOfBanknote>{
     private final int amount;
