@@ -1,21 +1,28 @@
 package ru.otus.hw11;
 
-import ru.otus.hw11.ATM;
-
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class MainClass {
     public static void main(String[] args) {
-        ATM atm = new ATM();
+        ATM atm = new ATMImpl();
 
-        atm.putUserCash(new int[]{300, 100, 200, 100});
+        System.out.println("<<<PUT>>>");
+        List<Banknote> userCashPut = new ArrayList<>();
+        userCashPut.add(Banknote.TWO_HUNDRED);
+        userCashPut.add(Banknote.ONE_HUNDRED);
+        userCashPut.add(Banknote.FIVE_THOUSAND);
+        userCashPut.add(Banknote.ONE_HUNDRED);
+        userCashPut.add(Banknote.FIVE_HUNDRED);
+        atm.putUserCash(userCashPut);
         System.out.println("cash balance: " + atm.getCashBalance());
         atm.printAboutCells();
 
-        ArrayList userCash = (ArrayList) atm.getUserCash(500);
-        System.out.println(userCash);
+        System.out.println("<<<GET>>>");
+        Collection userCashGet = (ArrayList) atm.getUserCash(800);
+        System.out.println(userCashGet);
         System.out.println("cash balance: " + atm.getCashBalance());
         atm.printAboutCells();
-
     }
 }
