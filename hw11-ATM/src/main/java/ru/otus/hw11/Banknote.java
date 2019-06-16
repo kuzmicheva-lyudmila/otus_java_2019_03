@@ -20,19 +20,4 @@ public enum Banknote {
 
     public int getNominal() {return  nominal;}
 
-    public static void main(String[] args) {
-        for (Banknote b : Banknote.values()) {
-            System.out.println(b + " " + b.getNominal());
-        }
-
-        SortedMap<Banknote, Integer> cells = new TreeMap<>();
-        cells.put(Banknote.TWO_HUNDRED, 5);
-        cells.put(Banknote.ONE_HUNDRED, 3);
-        cells.put(Banknote.ONE_THOUSAND, 1);
-
-        for (Map.Entry<Banknote, Integer> item : cells.entrySet()) {
-            System.out.printf("Key: %s  Value: %s \n", item.getKey().toString(), item.getValue().toString());
-        }
-
-    }
 }
