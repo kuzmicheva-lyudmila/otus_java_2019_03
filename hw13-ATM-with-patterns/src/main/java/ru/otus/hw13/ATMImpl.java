@@ -1,6 +1,5 @@
 package ru.otus.hw13;
 
-import ru.otus.hw13.chain.Handler;
 import ru.otus.hw13.chain.Middleware;
 import ru.otus.hw13.memento.Memento;
 
@@ -29,6 +28,7 @@ public class ATMImpl extends Middleware implements ATM{
         }
     }
 
+    @Override
     public void putUserCash(Collection<?> userCashes) {
         for (Banknote b : (Collection<Banknote>) userCashes) {
             if (cells.containsKey(b)) {
@@ -40,6 +40,7 @@ public class ATMImpl extends Middleware implements ATM{
         }
     }
 
+    @Override
     public Collection<?> getUserCash(int amount) {
         Collection<Banknote> userCash = new ArrayList<>();
 
@@ -79,6 +80,7 @@ public class ATMImpl extends Middleware implements ATM{
         return userCash;
     }
 
+    @Override
     public Integer getCashBalance() {
         return this.cashBalance;
     }
@@ -88,6 +90,7 @@ public class ATMImpl extends Middleware implements ATM{
         return this.ID;
     }
 
+    @Override
     public void printAboutCells() {
         for (Map.Entry<Banknote, CellOfATM> item : this.cells.entrySet()) {
             System.out.printf("Key: %s  Value: %s \n", item.getKey(), item.getValue().getCountBanknotes());

@@ -39,6 +39,7 @@ public class DepartmentImpl implements Department {
         }
     }
 
+    @Override
     public Integer getCashBalanceAllATM() {
         Middleware headMiddleware = null;
         Middleware middleware = null;

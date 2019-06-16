@@ -10,14 +10,17 @@ public class CellOfATMImpl implements CellOfATM{
         this.count = 0;
     }
 
+    @Override
     public void putBanknotes(int count) {
         this.count = this.count + count;
     }
 
+    @Override
     public void getBanknotes(int count) {
         this.count = this.count - count;
     }
 
+    @Override
     public int getCountBanknotes() { // количество купюр в ячейке
         return this.count;
     }
