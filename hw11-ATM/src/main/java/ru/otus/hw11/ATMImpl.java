@@ -14,6 +14,7 @@ public class ATMImpl implements ATM{
         }
     }
 
+    @Override
     public void putUserCash(List<Banknote> userCashes) {
         for (int i = 0; i < userCashes.size(); i++) {
             Banknote b = userCashes.get(i);
@@ -24,6 +25,7 @@ public class ATMImpl implements ATM{
         }
     }
 
+    @Override
     public Collection<Banknote> getUserCash(int amount) {
         Collection<Banknote> userCash = new ArrayList<>();
 
@@ -63,10 +65,12 @@ public class ATMImpl implements ATM{
         return userCash;
     }
 
+    @Override
     public int getCashBalance() {
         return this.cashBalance;
     }
 
+    @Override
     public void printAboutCells() {
         for (Map.Entry<Banknote, CellOfATM> item : this.cells.entrySet()) {
             System.out.printf("Key: %s  Value: %s \n", item.getKey(), item.getValue().getCountBanknotes());
