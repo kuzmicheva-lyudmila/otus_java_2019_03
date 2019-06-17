@@ -29,6 +29,7 @@ public class ATMTest {
     public void checkGetUserTest1() {
         Collection userCashGet = (ArrayList) atm.getUserCash(900);
         assertEquals(5000, this.atm.getCashBalance());
+        atm.printAboutCells();
         System.out.println(userCashGet);
     }
 
@@ -36,6 +37,7 @@ public class ATMTest {
     public void checkGetUserTest2() {
         Collection userCashGet = (ArrayList) atm.getUserCash(0);
         assertEquals(5900, this.atm.getCashBalance());
+        atm.printAboutCells();
         System.out.println(userCashGet);
     }
 
@@ -43,6 +45,7 @@ public class ATMTest {
     public void checkGetUserTest3() {
         Collection userCashGet = (ArrayList) atm.getUserCash(2100);
         assertEquals(5900, this.atm.getCashBalance());
+        atm.printAboutCells();
         System.out.println(userCashGet);
     }
 }
