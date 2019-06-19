@@ -13,7 +13,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DepartmentTest {
+
+public class ATMTest {
     Department department;
 
     private static Integer patternCommand(ATM atm, Collection<Object> userCashPut, Integer getUserCash) {
@@ -85,4 +86,5 @@ public class DepartmentTest {
         Integer balance = (Integer) department.getATM(1).getCashBalance() + (Integer) department.getATM(2).getCashBalance();
         assertEquals((Integer) 0, balance);
     }
+
 }
