@@ -2,10 +2,7 @@ package ru.otus.hw13;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.otus.hw13.command.Command;
-import ru.otus.hw13.command.GetCashBalance;
-import ru.otus.hw13.command.GetUserCash;
-import ru.otus.hw13.command.PutUserCash;
+import ru.otus.hw13.command.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,18 +68,18 @@ public class TestHw13 {
 
     @Test
     public void patternChainTest(){
-        Integer balance = (Integer) department.getATM(1).getCashBalance() + (Integer) department.getATM(2).getCashBalance();
-        assertEquals(balance, department.getCashBalanceAllATM());
+        Integer balance = (Integer) new GetCashBalance(department.getATM(1)).execute() + (Integer) new GetCashBalance(department.getATM(2)).execute();
+        assertEquals(balance, (Integer) new GetCashBalanceAllATM(department).execute());
     }
 
     @Test
     public void patternMementoTest(){
         Collection<Object> userCashPut = new ArrayList<>();
         userCashPut.add(Banknote.TWO_HUNDRED);
-        department.getATM(1).putUserCash(userCashPut);
+        new PutUserCash(department.getATM(1), userCashPut).execute();
 
-        department.RestoreState();
-        Integer balance = (Integer) department.getATM(1).getCashBalance() + (Integer) department.getATM(2).getCashBalance();
+        new RestoreStateAllATM(department).execute();
+        Integer balance = (Integer) new GetCashBalance(department.getATM(1)).execute() + (Integer) new GetCashBalance(department.getATM(2)).execute();
         assertEquals((Integer) 0, balance);
     }
 }

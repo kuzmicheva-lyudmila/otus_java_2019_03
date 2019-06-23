@@ -5,6 +5,6 @@ public interface Department {
     void removeATM(Integer idATM);
     ATM getATM(Integer ID);
 
-    void RestoreState(); // восстановить начальное состояние АТМ
+    void restoreState(); // восстановить начальное состояние АТМ
     Integer getCashBalanceAllATM(); // баланс всех АТМ
 }

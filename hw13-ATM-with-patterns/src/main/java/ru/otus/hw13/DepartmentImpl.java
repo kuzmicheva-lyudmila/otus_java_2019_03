@@ -1,6 +1,9 @@
 package ru.otus.hw13;
 
 import ru.otus.hw13.chain.Middleware;
+import ru.otus.hw13.command.Command;
+import ru.otus.hw13.command.RestoreStateATM;
+import ru.otus.hw13.command.SaveStateATM;
 import ru.otus.hw13.memento.Memento;
 
 import java.util.*;
@@ -18,7 +21,7 @@ public class DepartmentImpl implements Department {
     public void addATM(Integer ID, ATM atm) {
         this.atms.put(ID, atm);
         // сделаем снимок начального состояния ATM
-        this.mementos.put(ID, atm.saveState());
+        this.mementos.put(ID, (Memento) new SaveStateATM(atm).execute());
     }
 
     @Override
@@ -32,10 +35,9 @@ public class DepartmentImpl implements Department {
     }
 
     @Override
-    public void RestoreState() {
+    public void restoreState() {
         for(Map.Entry<Integer, ATM> item : this.atms.entrySet()) {
-            ATM atm = item.getValue();
-            atm.restoreState(mementos.get(item.getKey()));
+            new RestoreStateATM(item.getValue(), mementos.get(item.getKey())).execute();
         }
     }
 
@@ -49,7 +51,7 @@ public class DepartmentImpl implements Department {
         for (ATM atm : this.atms.values()) {
             if (isFirst) {
                 middleware = (ATMImpl) atm;
-                headMiddleware = middleware; // заполминаем начало цепочки
+                headMiddleware = middleware; // запоминаем начало цепочки
                 isFirst = false;
             }
             else {
