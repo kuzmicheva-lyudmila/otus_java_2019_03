@@ -1,6 +1,10 @@
 package ru.otus.homework.dao;
 
-public class Account {
+public class Account extends MetaInfo{
+    static{
+        Account.fillMetaInfo(Account.class);
+    }
+
     @Id
     private long no;
     private String type;

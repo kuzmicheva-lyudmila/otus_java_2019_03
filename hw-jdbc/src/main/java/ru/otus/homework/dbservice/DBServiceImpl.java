@@ -20,9 +20,6 @@ public class DBServiceImpl<T> implements DBService<T> {
         try (Connection connection = dataSource.getConnection()) {
             JdbcTemplate<T> executor = new JdbcTemplateImpl<>(connection);
             long objectId = executor.create(objectData);
-            if (objectId > 0) {
-                connection.commit();
-            }
             return objectId;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -35,9 +32,6 @@ public class DBServiceImpl<T> implements DBService<T> {
         try (Connection connection = dataSource.getConnection()) {
             JdbcTemplate<T> executor = new JdbcTemplateImpl<>(connection);
             long objectId = executor.update(objectData);
-            if (objectId > 0) {
-                connection.commit();
-            }
             return objectId;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -50,9 +44,6 @@ public class DBServiceImpl<T> implements DBService<T> {
         try (Connection connection = dataSource.getConnection()) {
             JdbcTemplate<T> executor = new JdbcTemplateImpl<>(connection);
             long objectId = executor.createOrUpdate(objectData);
-            if (objectId > 0) {
-                connection.commit();
-            }
             return objectId;
         } catch (Exception ex) {
             ex.printStackTrace();

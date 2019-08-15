@@ -1,6 +1,10 @@
 package ru.otus.homework.dao;
 
-public class User {
+public class User extends MetaInfo{
+    static{
+        User.fillMetaInfo(User.class);
+    }
+
     @Id
     private long id;
     private String name;
@@ -34,6 +38,6 @@ public class User {
                 "id=" + id +
                 ", Name='" + name + '\'' +
                 ", Age='" + age + '\'' +
-                '}';
+                "}";
     }
 }

@@ -2,6 +2,7 @@ package ru.otus.homework.executor;
 
 import java.lang.reflect.Field;
 import java.sql.*;
+import java.util.List;
 
 public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
 
@@ -12,28 +13,24 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
     }
 
     @Override
-    public long create(T objectData) throws SQLException, IllegalAccessException {
+    public long create(T objectData) throws SQLException, ReflectiveOperationException {
         Class objectClass = objectData.getClass();
-        String idFieldName = MetaCommand.getIdFieldOnTable(objectClass);
+        String idFieldName = (String) objectClass.getMethod("getIdField").invoke(null);
         long idFieldValue = 0;
         if (idFieldName != null) {
             Savepoint savePoint = this.connection.setSavepoint("savePointName");
-            String command = MetaCommand.getInsertCommand(idFieldName, objectClass);
+            String command = (String) objectClass.getMethod("getInsertCommand").invoke(null);
             try (PreparedStatement pst = connection.prepareStatement(command, Statement.RETURN_GENERATED_KEYS)) {
-                int counter = 0;
-                for (int idx = 0; idx < objectClass.getDeclaredFields().length; idx++) {
-                    Field field = objectClass.getDeclaredFields()[idx];
-                    if (!objectClass.getDeclaredFields()[idx].getName().equals(idFieldName)) {
-                        field.setAccessible(true);
-                        pst.setObject(++counter, field.get(objectData));
-                    }
-                }
+                setParametersOnCommand(objectData, objectClass, pst);
                 pst.executeUpdate();
                 try (ResultSet rs = pst.getGeneratedKeys()) {
                     rs.next();
                     idFieldValue = rs.getInt(1);
                 }
-            } catch (SQLException | IllegalAccessException e) {
+                if (idFieldValue > 0) {
+                    connection.commit();
+                }
+            } catch (SQLException | ReflectiveOperationException e) {
                 connection.rollback(savePoint);
                 System.out.println(e.getMessage());
                 throw e;
@@ -43,28 +40,24 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
     }
 
     @Override
-    public long update(T objectData) throws SQLException, NoSuchFieldException, IllegalAccessException {
+    public long update(T objectData) throws SQLException, ReflectiveOperationException {
         Class objectClass = objectData.getClass();
-        String idFieldName = MetaCommand.getIdFieldOnTable(objectClass);
+        String idFieldName = (String) objectClass.getMethod("getIdField").invoke(null);
         long idFieldValue = 0;
         if (idFieldName != null) {
             Savepoint savePoint = this.connection.setSavepoint("savePointName");
-            String command = MetaCommand.getUpdateCommand(idFieldName, objectClass);
+            String command = (String) objectClass.getMethod("getUpdateCommand").invoke(null);
             try (PreparedStatement pst = connection.prepareStatement(command)) {
-                int counter = 0;
-                for (int idx = 0; idx < objectClass.getDeclaredFields().length; idx++) {
-                    Field field = objectClass.getDeclaredFields()[idx];
-                    if (!objectClass.getDeclaredFields()[idx].getName().equals(idFieldName)) {
-                        field.setAccessible(true);
-                        pst.setObject(++counter, field.get(objectData));
-                    }
-                }
+                int counter = setParametersOnCommand(objectData, objectClass, pst);
                 Field idField = objectClass.getDeclaredField(idFieldName);
                 idField.setAccessible(true);
                 pst.setObject(++counter, idField.getLong(objectData));
                 int isUpdated = pst.executeUpdate();
                 idFieldValue = (isUpdated > 0) ? idField.getLong(objectData) : 0;
-            } catch (IllegalAccessException | NoSuchFieldException e) {
+                if (idFieldValue > 0) {
+                    connection.commit();
+                }
+            } catch (SQLException | ReflectiveOperationException  e) {
                 this.connection.rollback(savePoint);
                 System.out.println(e.getMessage());
                 throw e;
@@ -74,7 +67,7 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
     }
 
     @Override
-    public long createOrUpdate(T objectData) throws SQLException, NoSuchFieldException, IllegalAccessException {
+    public long createOrUpdate(T objectData) throws SQLException, ReflectiveOperationException {
         long idFieldValue = update(objectData);
         if (idFieldValue == 0) {
             long idObject = create(objectData);
@@ -84,21 +77,24 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
     }
 
     @Override
-    public <T> T load(long id, Class<T> objectClass) throws SQLException {
+    public <T> T load(long id, Class<T> objectClass) throws SQLException, ReflectiveOperationException {
         T objectData = null;
-        String idFieldName = MetaCommand.getIdFieldOnTable(objectClass);
+        String idFieldName = (String) objectClass.getMethod("getIdField").invoke(null);;
         if (idFieldName != null) {
-            String command = MetaCommand.getSelectCommand(idFieldName, objectClass);
+            String command = (String) objectClass.getMethod("getSelectCommand").invoke(null);;
             try (PreparedStatement pst = this.connection.prepareStatement(command)) {
                 pst.setLong(1, id);
                 try (ResultSet rs = pst.executeQuery()) {
                     if (rs.next()) {
                         objectData = objectClass.newInstance();
-                        for (int idx = 0; idx < objectClass.getDeclaredFields().length; idx++) {
-                            Field field = objectClass.getDeclaredFields()[idx];
+                        for (String fieldName : (List<String>) objectClass.getMethod("getClassFields").invoke(null)) {
+                            Field field = objectClass.getDeclaredField(fieldName);
                             field.setAccessible(true);
-                            field.set(objectData, parseType(field.getType(), rs, idx + 1));
+                            field.set(objectData, parseType(field.getType(), rs, fieldName));
                         }
+                        Field field = objectClass.getDeclaredField(idFieldName);
+                        field.setAccessible(true);
+                        field.set(objectData, rs.getLong(idFieldName));
                     }
                 } catch (IllegalAccessException | InstantiationException e) {
                     System.out.println(e.getMessage());
@@ -108,34 +104,44 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
         return objectData;
     }
 
-    private Object parseType(Class objectClass, ResultSet resultSet, int index) throws SQLException {
+    private int setParametersOnCommand(T objectData, Class objectClass, PreparedStatement pst) throws SQLException, ReflectiveOperationException {
+        int counter = 0;
+        for (String fieldName : (List<String>) objectClass.getMethod("getClassFields").invoke(null)) {
+            Field field = objectClass.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            pst.setObject(++counter, field.get(objectData));
+        }
+        return counter;
+    }
+
+    private Object parseType(Class objectClass, ResultSet resultSet, String fieldName) throws SQLException {
         if (objectClass == int.class
                 || objectClass == Integer.class) {
-            return resultSet.getInt(index);
+            return resultSet.getInt(fieldName);
         } else if (objectClass == short.class
                 || objectClass == Short.class) {
-            return resultSet.getShort(index);
+            return resultSet.getShort(fieldName);
         } else if (objectClass == byte.class
                 || objectClass == Byte.class) {
-            return resultSet.getByte(index);
+            return resultSet.getByte(fieldName);
         } else if (objectClass == long.class
                 || objectClass == Long.class) {
-            return resultSet.getLong(index);
+            return resultSet.getLong(fieldName);
         } else if (objectClass == float.class
                 || objectClass == Float.class) {
-            return resultSet.getFloat(index);
+            return resultSet.getFloat(fieldName);
         } else if (objectClass == double.class
                 || objectClass == Double.class) {
-            return resultSet.getDouble(index);
+            return resultSet.getDouble(fieldName);
         } else if (objectClass == char.class
                 || objectClass == Character.class
                 || objectClass == String.class) {
-            return resultSet.getString(index);
+            return resultSet.getString(fieldName);
         } else if (objectClass == boolean.class
                 || objectClass == Boolean.class) {
-            return resultSet.getBoolean(index);
+            return resultSet.getBoolean(fieldName);
         } else {
-            return resultSet.getObject(index);
+            return resultSet.getObject(fieldName);
         }
     }
 }
