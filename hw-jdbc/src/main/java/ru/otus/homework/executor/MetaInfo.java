@@ -1,19 +1,21 @@
-package ru.otus.homework.dao;
+package ru.otus.homework.executor;
+
+import ru.otus.homework.dao.Id;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class MetaInfo {
-    private static Class thisClass;
+public class MetaInfo {
+    private Class thisClass;
 
-    private static String idField;
-    private static List<String> classFields;
-    private static String insertCommand;
-    private static String updateCommand;
-    private static String selectCommand;
+    private String idField;
+    private List<String> classFields;
+    private String insertCommand;
+    private String updateCommand;
+    private String selectCommand;
 
-    protected static void fillMetaInfo(Class<? extends MetaInfo> clazz) {
+    public MetaInfo(Class clazz) {
         thisClass = clazz;
         idField = setIdFieldOnTable();
         classFields = fillClassFields();
@@ -22,27 +24,27 @@ public abstract class MetaInfo {
         selectCommand = setSelectCommand();
     }
 
-    public static String getIdField() {
+    public String getIdField() {
         return idField;
     }
 
-    public static List<String> getClassFields() {
+    public List<String> getClassFields() {
         return classFields;
     }
 
-    public static String getInsertCommand() {
+    public String getInsertCommand() {
         return insertCommand;
     }
 
-    public static String getUpdateCommand() {
+    public String getUpdateCommand() {
         return updateCommand;
     }
 
-    public static String getSelectCommand() {
+    public String getSelectCommand() {
         return selectCommand;
     }
 
-    private static String setIdFieldOnTable() {
+    private String setIdFieldOnTable() {
         for (Field field : thisClass.getDeclaredFields()) {
             if (field.isAnnotationPresent(Id.class)) {
                 return field.getName();
@@ -51,7 +53,7 @@ public abstract class MetaInfo {
         return null;
     }
 
-    private static List<String> fillClassFields() {
+    private List<String> fillClassFields() {
         List classFields = new ArrayList();
         for (Field field : thisClass.getDeclaredFields()) {
             if (!field.getName().equals(idField)) {
@@ -61,7 +63,7 @@ public abstract class MetaInfo {
         return classFields;
     }
 
-    private static String setInsertCommand() {
+    private String setInsertCommand() {
         if (classFields.size() > 1) {
             StringBuilder listColumnNames = new StringBuilder();
             StringBuilder listParameters = new StringBuilder();
@@ -80,7 +82,7 @@ public abstract class MetaInfo {
         }
     }
 
-    private static String setUpdateCommand() {
+    private String setUpdateCommand() {
         if (thisClass.getDeclaredFields().length > 1) {
             StringBuilder listColumnNames = new StringBuilder();
             for (String field : classFields) {
@@ -96,7 +98,7 @@ public abstract class MetaInfo {
         }
     }
 
-    private static String setSelectCommand() {
+    private String setSelectCommand() {
         return String.format("select * from %s where %s = ?", thisClass.getSimpleName(), idField);
     }
 }

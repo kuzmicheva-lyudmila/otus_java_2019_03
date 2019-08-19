@@ -1,25 +1,34 @@
 package ru.otus.homework.executor;
 
+import ru.otus.homework.dao.Id;
+
 import java.lang.reflect.Field;
 import java.sql.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
+    private static final Package COMMON_PACKAGE_FOR_CLASSES = Id.class.getPackage();
+    private static Map<Class, MetaInfo> mapForClassMetaInfo = new HashMap<>();
 
     private final Connection connection;
 
-    public JdbcTemplateImpl(Connection connection) {
+    public JdbcTemplateImpl(Connection connection, Class clazz) {
         this.connection = connection;
+        if (!mapForClassMetaInfo.containsKey(clazz)) {
+            mapForClassMetaInfo.put(clazz, new MetaInfo(clazz));
+        }
     }
 
     @Override
     public long create(T objectData) throws SQLException, ReflectiveOperationException {
         Class objectClass = objectData.getClass();
-        String idFieldName = (String) objectClass.getMethod("getIdField").invoke(null);
+        String idFieldName = mapForClassMetaInfo.get(objectClass).getIdField();
         long idFieldValue = 0;
         if (idFieldName != null) {
             Savepoint savePoint = this.connection.setSavepoint("savePointName");
-            String command = (String) objectClass.getMethod("getInsertCommand").invoke(null);
+            String command = mapForClassMetaInfo.get(objectClass).getInsertCommand();
             try (PreparedStatement pst = connection.prepareStatement(command, Statement.RETURN_GENERATED_KEYS)) {
                 setParametersOnCommand(objectData, objectClass, pst);
                 pst.executeUpdate();
@@ -42,11 +51,11 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
     @Override
     public long update(T objectData) throws SQLException, ReflectiveOperationException {
         Class objectClass = objectData.getClass();
-        String idFieldName = (String) objectClass.getMethod("getIdField").invoke(null);
+        String idFieldName = mapForClassMetaInfo.get(objectClass).getIdField();
         long idFieldValue = 0;
         if (idFieldName != null) {
             Savepoint savePoint = this.connection.setSavepoint("savePointName");
-            String command = (String) objectClass.getMethod("getUpdateCommand").invoke(null);
+            String command = mapForClassMetaInfo.get(objectClass).getUpdateCommand();
             try (PreparedStatement pst = connection.prepareStatement(command)) {
                 int counter = setParametersOnCommand(objectData, objectClass, pst);
                 Field idField = objectClass.getDeclaredField(idFieldName);
@@ -79,15 +88,15 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
     @Override
     public <T> T load(long id, Class<T> objectClass) throws SQLException, ReflectiveOperationException {
         T objectData = null;
-        String idFieldName = (String) objectClass.getMethod("getIdField").invoke(null);;
+        String idFieldName = mapForClassMetaInfo.get(objectClass).getIdField();
         if (idFieldName != null) {
-            String command = (String) objectClass.getMethod("getSelectCommand").invoke(null);;
+            String command = mapForClassMetaInfo.get(objectClass).getSelectCommand();
             try (PreparedStatement pst = this.connection.prepareStatement(command)) {
                 pst.setLong(1, id);
                 try (ResultSet rs = pst.executeQuery()) {
                     if (rs.next()) {
                         objectData = objectClass.newInstance();
-                        for (String fieldName : (List<String>) objectClass.getMethod("getClassFields").invoke(null)) {
+                        for (String fieldName : mapForClassMetaInfo.get(objectClass).getClassFields()) {
                             Field field = objectClass.getDeclaredField(fieldName);
                             field.setAccessible(true);
                             field.set(objectData, parseType(field.getType(), rs, fieldName));
@@ -106,7 +115,7 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
 
     private int setParametersOnCommand(T objectData, Class objectClass, PreparedStatement pst) throws SQLException, ReflectiveOperationException {
         int counter = 0;
-        for (String fieldName : (List<String>) objectClass.getMethod("getClassFields").invoke(null)) {
+        for (String fieldName : mapForClassMetaInfo.get(objectClass).getClassFields()) {
             Field field = objectClass.getDeclaredField(fieldName);
             field.setAccessible(true);
             pst.setObject(++counter, field.get(objectData));

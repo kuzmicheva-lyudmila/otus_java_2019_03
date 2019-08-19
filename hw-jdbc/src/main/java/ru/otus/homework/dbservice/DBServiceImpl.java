@@ -18,7 +18,7 @@ public class DBServiceImpl<T> implements DBService<T> {
     @Override
     public long create(T objectData) {
         try (Connection connection = dataSource.getConnection()) {
-            JdbcTemplate<T> executor = new JdbcTemplateImpl<>(connection);
+            JdbcTemplate<T> executor = new JdbcTemplateImpl<>(connection, objectClass);
             long objectId = executor.create(objectData);
             return objectId;
         } catch (Exception ex) {
@@ -30,7 +30,7 @@ public class DBServiceImpl<T> implements DBService<T> {
     @Override
     public long update(T objectData) {
         try (Connection connection = dataSource.getConnection()) {
-            JdbcTemplate<T> executor = new JdbcTemplateImpl<>(connection);
+            JdbcTemplate<T> executor = new JdbcTemplateImpl<>(connection, objectClass);
             long objectId = executor.update(objectData);
             return objectId;
         } catch (Exception ex) {
@@ -42,7 +42,7 @@ public class DBServiceImpl<T> implements DBService<T> {
     @Override
     public long createOrUpdate(T objectData) {
         try (Connection connection = dataSource.getConnection()) {
-            JdbcTemplate<T> executor = new JdbcTemplateImpl<>(connection);
+            JdbcTemplate<T> executor = new JdbcTemplateImpl<>(connection, objectClass);
             long objectId = executor.createOrUpdate(objectData);
             return objectId;
         } catch (Exception ex) {
@@ -54,7 +54,7 @@ public class DBServiceImpl<T> implements DBService<T> {
     @Override
     public <T> T load(long id) {
         try (Connection connection = dataSource.getConnection()) {
-            JdbcTemplate<T> executor = new JdbcTemplateImpl<>(connection);
+            JdbcTemplate<T> executor = new JdbcTemplateImpl<>(connection, objectClass);
             T objectData = (T) executor.load(id, objectClass);
             return objectData;
         } catch (Exception ex) {

@@ -1,10 +1,8 @@
 package ru.otus.homework.dao;
 
-public class User extends MetaInfo{
-    static{
-        User.fillMetaInfo(User.class);
-    }
+import ru.otus.homework.executor.MetaInfo;
 
+public class User {
     @Id
     private long id;
     private String name;

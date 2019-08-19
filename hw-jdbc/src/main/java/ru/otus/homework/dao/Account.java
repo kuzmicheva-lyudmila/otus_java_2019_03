@@ -1,10 +1,9 @@
 package ru.otus.homework.dao;
 
-public class Account extends MetaInfo{
-    static{
-        Account.fillMetaInfo(Account.class);
-    }
+import ru.otus.homework.executor.JdbcTemplate;
+import ru.otus.homework.executor.MetaInfo;
 
+public class Account {
     @Id
     private long no;
     private String type;

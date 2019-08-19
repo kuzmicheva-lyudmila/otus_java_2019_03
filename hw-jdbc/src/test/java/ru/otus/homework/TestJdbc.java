@@ -1,6 +1,5 @@
 package ru.otus.homework;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ru.otus.homework.dao.Account;
 import ru.otus.homework.dao.User;
