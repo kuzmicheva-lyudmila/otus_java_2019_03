@@ -12,7 +12,7 @@ public class AddressDataSet {
     private String street;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public AddressDataSet() {

@@ -1,6 +1,5 @@
 package ru.otus.homework.dbservice;
 
-import org.hibernate.SessionFactory;
 import ru.otus.homework.dao.Dao;
 import ru.otus.homework.dao.UserDao;
 import ru.otus.homework.models.User;
@@ -10,8 +9,8 @@ public class UserService implements DBService<User> {
 
     private Dao userDao;
 
-    public UserService(SessionFactory sessionFactory) {
-        userDao = new UserDao(sessionFactory);
+    public UserService() {
+        userDao = new UserDao();
     }
 
     @Override

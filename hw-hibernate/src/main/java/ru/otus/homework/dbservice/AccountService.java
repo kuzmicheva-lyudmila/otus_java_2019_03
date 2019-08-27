@@ -1,6 +1,5 @@
 package ru.otus.homework.dbservice;
 
-import org.hibernate.SessionFactory;
 import ru.otus.homework.dao.AccountDao;
 import ru.otus.homework.dao.Dao;
 import ru.otus.homework.models.Account;
@@ -8,8 +7,8 @@ import ru.otus.homework.models.Account;
 public class AccountService implements DBService<Account> {
     private Dao accountDao;
 
-    public AccountService(SessionFactory sessionFactory) {
-        accountDao = new AccountDao(sessionFactory);
+    public AccountService() {
+        accountDao = new AccountDao();
     }
 
     @Override

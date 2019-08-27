@@ -12,7 +12,7 @@ public class PhoneDataSet {
     private String number;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "phone_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public PhoneDataSet() {

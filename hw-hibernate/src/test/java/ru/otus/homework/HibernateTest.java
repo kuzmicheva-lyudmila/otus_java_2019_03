@@ -20,31 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HibernateTest {
-    private static final String URL = "jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1";
-    private final SessionFactory sessionFactory;
     private final DBService userService;
     private final DBService accountService;
 
     public  HibernateTest() {
-        System.out.println("RUN constructor...");
-
-        Configuration configuration = new Configuration()
-                .configure("hibernate.cfg.xml");
-
-        StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-                .applySettings(configuration.getProperties()).build();
-
-        Metadata metadata = new MetadataSources(serviceRegistry)
-                .addAnnotatedClass(Account.class)
-                .addAnnotatedClass(User.class)
-                .addAnnotatedClass(AddressDataSet.class)
-                .addAnnotatedClass(PhoneDataSet.class)
-                .getMetadataBuilder()
-                .build();
-
-        sessionFactory = metadata.getSessionFactoryBuilder().build();
-        userService = new UserService(sessionFactory);
-        accountService = new AccountService(sessionFactory);
+        userService = new UserService();
+        accountService = new AccountService();
     }
 
     @Test

@@ -1,20 +1,17 @@
 package ru.otus.homework.dao;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import ru.otus.homework.models.User;
 
 public class UserDao implements Dao<User> {
-    private final SessionFactory sessionFactory;
 
-    public UserDao(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public UserDao() {
     }
 
     @Override
     public void create(User objectData) {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = HibernateSession.getSessionFactory().openSession()) {
             Transaction transaction = session.getTransaction();
             transaction.begin();
             session.save(objectData);
@@ -24,7 +21,7 @@ public class UserDao implements Dao<User> {
 
     @Override
     public void update(User objectData) {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = HibernateSession.getSessionFactory().openSession()) {
             Transaction transaction = session.getTransaction();
             transaction.begin();
             session.update(objectData);
@@ -35,7 +32,7 @@ public class UserDao implements Dao<User> {
 
     @Override
     public void delete(User objectData) {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = HibernateSession.getSessionFactory().openSession()) {
             Transaction transaction = session.getTransaction();
             transaction.begin();
             session.delete(objectData);
@@ -45,7 +42,7 @@ public class UserDao implements Dao<User> {
 
     @Override
     public User load(long id) {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = HibernateSession.getSessionFactory().openSession()) {
             return session.get(User.class, id);
         }
     }
