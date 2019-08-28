@@ -12,7 +12,7 @@ import ru.otus.homework.models.PhoneDataSet;
 import ru.otus.homework.models.User;
 
 public class HibernateSession {
-    private static SessionFactory sessionFactory = createSessionFactory();
+    private static final SessionFactory sessionFactory = createSessionFactory();
 
     public static SessionFactory createSessionFactory() {
         Configuration configuration = new Configuration()
@@ -29,8 +29,7 @@ public class HibernateSession {
                 .getMetadataBuilder()
                 .build();
 
-        sessionFactory = metadata.getSessionFactoryBuilder().build();
-        return sessionFactory;
+        return metadata.getSessionFactoryBuilder().build();
     }
 
     public static SessionFactory getSessionFactory() {
