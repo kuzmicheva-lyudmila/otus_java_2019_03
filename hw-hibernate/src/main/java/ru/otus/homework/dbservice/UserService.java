@@ -9,8 +9,8 @@ public class UserService implements DBService<User> {
 
     private Dao userDao;
 
-    public UserService() {
-        userDao = new UserDao();
+    public UserService(boolean useCache) {
+        userDao = new UserDao(useCache);
     }
 
     @Override
