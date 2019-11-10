@@ -1,14 +1,14 @@
 package ru.otus.homework.dbservice;
 
-import ru.otus.homework.dao.AccountDao;
+import ru.otus.homework.dao.AccountDaoImpl;
 import ru.otus.homework.dao.Dao;
 import ru.otus.homework.models.Account;
 
 public class AccountService implements DBService<Account> {
-    private Dao accountDao;
+    private final Dao accountDao;
 
     public AccountService() {
-        accountDao = new AccountDao();
+        accountDao = new AccountDaoImpl();
     }
 
     @Override

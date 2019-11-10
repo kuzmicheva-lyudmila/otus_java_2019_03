@@ -3,9 +3,13 @@ package ru.otus.homework.dao;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import ru.otus.homework.models.Account;
+import ru.otus.homework.models.User;
 
-public class AccountDao implements Dao<Account> {
-    public AccountDao() {
+import javax.persistence.EntityManager;
+import java.util.List;
+
+public class AccountDaoImpl implements Dao<Account> {
+    public AccountDaoImpl() {
     }
 
     @Override
@@ -37,6 +41,15 @@ public class AccountDao implements Dao<Account> {
             session.delete(objectData);
             transaction.commit();
         }
+    }
+
+    @Override
+    public List<Account> loadAll() {
+        EntityManager entityManager = HibernateSession.getSessionFactory().createEntityManager();
+        List<Account> selectedAccount = entityManager.createQuery("select a from Account a", Account.class)
+                .getResultList();
+
+        return selectedAccount;
     }
 
     @Override
