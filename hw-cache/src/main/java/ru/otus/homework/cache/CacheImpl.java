@@ -1,19 +1,15 @@
-package ru.otus.homework.dao.cache;
+package ru.otus.homework.cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.homework.dao.UserDaoImpl;
 
-import java.lang.ref.PhantomReference;
-import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
 import java.util.*;
 
-public class CacheDaoImpl<K, V> implements CacheDao<K, V> {
-    private static Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
+public class CacheImpl<K, V> implements Cache<K, V> {
+    private static Logger logger = LoggerFactory.getLogger(CacheImpl.class);
 
     private final Map<K, V> cache = new WeakHashMap<>();
-    private final List<ListenerDao> listeners = new ArrayList<>();
+    private final List<Listener> listeners = new ArrayList<>();
 
     @Override
     public void put(K key, V value) {
@@ -35,17 +31,17 @@ public class CacheDaoImpl<K, V> implements CacheDao<K, V> {
     }
 
     @Override
-    public void addListener(ListenerDao listener) {
+    public void addListener(Listener listener) {
         listeners.add(listener);
     }
 
     @Override
-    public void removeListener(ListenerDao listener) {
+    public void removeListener(Listener listener) {
         listeners.remove(listener);
     }
 
     private void notifyListeners(K key, V value, String action) {
-        for (ListenerDao listener : listeners) {
+        for (Listener listener : listeners) {
             if (listener != null) {
                 try {
                     listener.notify(key, value, action);

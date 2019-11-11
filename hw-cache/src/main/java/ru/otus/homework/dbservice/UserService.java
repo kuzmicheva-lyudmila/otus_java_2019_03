@@ -2,30 +2,27 @@ package ru.otus.homework.dbservice;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.homework.cache.Cache;
 import ru.otus.homework.dao.Dao;
 import ru.otus.homework.dao.UserDaoImpl;
-import ru.otus.homework.dao.cache.CacheDao;
-import ru.otus.homework.dao.cache.CacheDaoImpl;
 import ru.otus.homework.models.User;
 
 
 public class UserService implements DBService<User> {
-    private static Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final Dao<User> userDao;
-    private final CacheDao<String, User> cache;
+    private final Cache<String, User> cache;
 
-    public UserService(boolean useCache) {
+    public UserService(Cache cache) {
         userDao = new UserDaoImpl();
 
-        if (useCache) {
-            cache = new CacheDaoImpl<>();
-            cache.addListener((key, value, action) -> logger.info("key: {}, value: {}, action: {}", key, value, action));
+        this.cache = cache;
+        if (this.cache != null) {
+            this.cache.addListener((key, value, action) -> logger.info("key: {}, value: {}, action: {}", key, value, action));
             for (User user : userDao.loadAll()) {
-                cache.put(String.valueOf(user.getId()), user);
+                this.cache.put(String.valueOf(user.getId()), user);
             }
-        } else {
-            cache = null;
         }
     }
 

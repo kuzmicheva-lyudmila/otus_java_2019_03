@@ -1,6 +1,7 @@
 package ru.otus.homework;
 
 import org.junit.jupiter.api.Test;
+import ru.otus.homework.cache.CacheImpl;
 import ru.otus.homework.dbservice.DBService;
 import ru.otus.homework.dbservice.UserService;
 import ru.otus.homework.models.AddressDataSet;
@@ -15,8 +16,8 @@ public class CacheTest {
 
     @Test
     public void cacheForUser() {
-        DBService userServiceWithoutCache = new UserService(false);
-        DBService userServiceWithCache = new UserService(true);
+        DBService userServiceWithoutCache = new UserService(new CacheImpl<String, User>());
+        DBService userServiceWithCache = new UserService(null);
         int count = 100;
 
         List<Long> idListWithoutCache = new ArrayList<>();
