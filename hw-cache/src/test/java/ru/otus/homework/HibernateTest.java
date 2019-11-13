@@ -24,7 +24,7 @@ public class HibernateTest {
     private final DBService accountService;
 
     public HibernateTest() {
-        userService = new UserService(false);
+        userService = new UserService(null);
         accountService = new AccountService();
     }
 

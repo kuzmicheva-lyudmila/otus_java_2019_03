@@ -13,6 +13,12 @@
     <version>2019-04-SNAPSHOT</version>
 
     <description>Code examples</description>
+    <modules>
+        <module>cw-iostream</module>
+        <module>hw-json</module>
+        <module>cw-jdbs</module>
+        <module>cw18-myBatis</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
