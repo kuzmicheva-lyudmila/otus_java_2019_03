@@ -16,18 +16,6 @@ public class AuthorizationServiceImpl implements AuthorizationService{
     }
 
     @Override
-    public void addSession(String sessionId, Account account) {
-
-        sessionIdToAccount.put(sessionId, account);
-    }
-
-    @Override
-    public void deleteSession(String sessionId) {
-
-        sessionIdToAccount.remove(sessionId);
-    }
-
-    @Override
     public String getSessionLogin(String sessionId) {
 
         return sessionIdToAccount.get(sessionId) == null
@@ -42,13 +30,17 @@ public class AuthorizationServiceImpl implements AuthorizationService{
     }
 
     @Override
-    public boolean checkAndAddAccount(String sessionId, Account account) {
+    public boolean login(String sessionId, Account account) {
         boolean result = false;
-        Account dbAccount = accountService.checkAndGetAccount(account);
+        Account dbAccount = accountService.loginWithAccount(account);
         if (dbAccount != null) {
             addSession(sessionId, dbAccount);
             result = true;
         }
         return result;
+    }
+
+    private void addSession(String sessionId, Account account) {
+        sessionIdToAccount.put(sessionId, account);
     }
 }

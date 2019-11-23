@@ -1,7 +1,6 @@
 package ru.otus.hw.webserver.models;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;

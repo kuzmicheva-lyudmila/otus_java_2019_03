@@ -4,7 +4,6 @@ import ru.otus.hw.webserver.models.Account;
 import ru.otus.hw.webserver.service.AuthorizationService;
 import ru.otus.hw.webserver.servlets.pagegenerator.PageGenerator;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +19,6 @@ public class AdminServlet extends HttpServlet {
     private final PageGenerator pageGenerator;
 
     public AdminServlet(AuthorizationService authorizationService) throws IOException {
-
         this.authorizationService = authorizationService;
         this.pageGenerator = new PageGenerator();
     }
@@ -53,11 +51,11 @@ public class AdminServlet extends HttpServlet {
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("users", "");
 
-        boolean check = false;
+        boolean result = false;
         if (!authorizationService.isSessionExists(session)) {
-            check = authorizationService.checkAndAddAccount(request.getSession().getId(), account);
+            result = authorizationService.login(request.getSession().getId(), account);
         }
-        if (!check) {
+        if (!result) {
             pageVariables.put("login", NOT_AUTHORIZED);
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } else {
@@ -66,18 +64,5 @@ public class AdminServlet extends HttpServlet {
         }
         response.setContentType("text/html;charset=utf-8");
         response.getWriter().println(pageGenerator.getPage(FILE_NAME, pageVariables));
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        authorizationService.deleteSession(request.getSession().getId());
-
-        Map<String, Object> pageVariables = new HashMap<>();
-        pageVariables.put("login", NOT_AUTHORIZED);
-        pageVariables.put("users", "");
-
-        response.setContentType("text/html;charset=utf-8");
-        response.getWriter().println(pageGenerator.getPage(FILE_NAME, pageVariables));
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

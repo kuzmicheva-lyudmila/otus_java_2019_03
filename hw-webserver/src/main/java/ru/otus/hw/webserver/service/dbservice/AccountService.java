@@ -11,5 +11,5 @@ public interface AccountService {
     Account load(String id);
     List<Account> loadAll();
 
-    Account checkAndGetAccount(Account account);
+    Account loginWithAccount(Account account);
 }

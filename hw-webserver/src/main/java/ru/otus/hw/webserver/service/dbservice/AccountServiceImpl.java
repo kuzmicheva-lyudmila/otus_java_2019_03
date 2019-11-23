@@ -51,8 +51,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account checkAndGetAccount(Account account) {
-        boolean result = false;
+    public Account loginWithAccount(Account account) {
         Account dbAccount = load(account.getLogin());
         if (dbAccount != null
                 && !account.getLogin().isEmpty()
