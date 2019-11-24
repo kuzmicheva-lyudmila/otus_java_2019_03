@@ -4,24 +4,25 @@
 </head>
     <body >
         <form action="/admin" method="POST">
-            Login: <input type="text" name="login"/>
-            Password: <input type="password" name="password"/>
+            Login: <input type="text" name="set_login"/>
+            Password: <input type="password" name="set_password"/>
             <input type="submit" value="Sign in">
         </form>
 
         <form action="/users" method="POST">
-            Name: <input type="text" name="userName"/>
-            Age: <input type="number" name="userAge"/>
-            Address: <input type="text" name="userAddress"/>
-            Phone: <input type="phone" name="userPhone"/>
+            Name: <input type="text" name="set_user_name"/>
+            Age: <input type="number" name="set_user_age"/>
+            Address: <input type="text" name="set_user_address"/>
+            Phone: <input type="text" name="set_user_phone"/>
             <input type="submit" value="Create user">
         </form>
 
         <form action="/users" method="GET">
-            Users: ${users}
             <input type="submit" value="Get users">
+            Users: ${users}
         </form>
 
+        <p>Authorization status: ${authorization_status}</p>
         <p>Login: ${login}</p>
 
     </body>

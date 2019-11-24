@@ -1,9 +1,12 @@
 package ru.otus.hw.webserver.service;
 
 import ru.otus.hw.webserver.models.Account;
+import ru.otus.hw.webserver.server.UserSession;
+
+import javax.servlet.http.HttpSession;
 
 public interface AuthorizationService {
-    String getSessionLogin(String sessionId);
-    boolean isSessionExists(String sessionId);
-    boolean login(String sessionId, Account account);
+    UserSession getUserSession(HttpSession httpSession);
+    boolean isSessionExists(UserSession userSession);
+    UserSession login(String sessionId, Account account);
 }

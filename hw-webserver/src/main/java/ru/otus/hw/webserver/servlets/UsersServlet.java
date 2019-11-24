@@ -5,69 +5,54 @@ import ru.otus.hw.webserver.models.PhoneDataSet;
 import ru.otus.hw.webserver.models.User;
 import ru.otus.hw.webserver.service.AuthorizationService;
 import ru.otus.hw.webserver.service.dbservice.UserService;
-import ru.otus.hw.webserver.servlets.pagegenerator.PageGenerator;
+import ru.otus.hw.webserver.server.PageGenerator;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+
+import static ru.otus.hw.webserver.server.LocalServer.PATH_ADMIN;
+import static ru.otus.hw.webserver.server.PageGenerator.*;
 
 public class UsersServlet extends HttpServlet {
     private static final String FILE_NAME = "admin_page.html";
-    private static final String NOT_AUTHORIZED = "NOT AUTHORIZED";
 
     private final UserService userService;
     private final AuthorizationService authorizationService;
     private final PageGenerator pageGenerator;
 
-    public UsersServlet(AuthorizationService authorizationService, UserService userService) throws IOException {
+    public UsersServlet(AuthorizationService authorizationService, UserService userService, PageGenerator pageGenerator) throws IOException {
         this.authorizationService = authorizationService;
         this.userService = userService;
-        this.pageGenerator = new PageGenerator();
+        this.pageGenerator = pageGenerator;
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        String session = request.getSession(false).getId();
-        Map<String, Object> pageVariables = new HashMap<>();
-        pageVariables.put(
-                "login",
-                authorizationService.getSessionLogin(session).isEmpty()
-                        ? NOT_AUTHORIZED
-                        : authorizationService.getSessionLogin(session)
-        );
-        pageVariables.put("users", userService.loadAll().toString());
-
-        response.setContentType("text/html;charset=utf-8");
-        response.getWriter().println(pageGenerator.getPage(FILE_NAME, pageVariables));
-        response.setStatus(HttpServletResponse.SC_OK);
+            throws IOException, ServletException {
+        String users = userService.loadAll().toString();
+        request.setAttribute(PAGE_PARAMETER_USERS, users);
+        RequestDispatcher dispatcher = request.getRequestDispatcher(PATH_ADMIN);
+        dispatcher.forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws IOException {
+        createUser(request);
+        response.sendRedirect(PATH_ADMIN);
+    }
+
+    private void createUser(HttpServletRequest request) {
         User user = new User();
-        user.setName(request.getParameter("userName"));
-        user.setAge(Integer.parseInt(request.getParameter("userAge")));
-        user.setAddress(new AddressDataSet(request.getParameter("userAddress"), user));
-        user.setPhones(Collections.singletonList(new PhoneDataSet(request.getParameter("userPhone"), user)));
+        user.setName(request.getParameter(PAGE_PARAMETER_SET_USER_NAME));
+        user.setAge(Integer.parseInt(request.getParameter(PAGE_PARAMETER_SET_USER_AGE)));
+        user.setAddress(new AddressDataSet(request.getParameter(PAGE_PARAMETER_SET_USER_ADDRESS), user));
+        user.setPhones(Collections.singletonList(new PhoneDataSet(request.getParameter(PAGE_PARAMETER_SET_USER_PHONE), user)));
         userService.create(user);
-
-        String session = request.getSession(false).getId();
-        Map<String, Object> pageVariables = new HashMap<>();
-        pageVariables.put("login",
-                authorizationService.getSessionLogin(session) == null
-                        ? NOT_AUTHORIZED
-                        : authorizationService.getSessionLogin(session)
-        );
-        pageVariables.put("users", "");
-
-        response.setContentType("text/html;charset=utf-8");
-        response.getWriter().println(pageGenerator.getPage(FILE_NAME, pageVariables));
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

@@ -1,5 +1,6 @@
 package ru.otus.hw.webserver.servlets;
 
+import ru.otus.hw.webserver.server.UserSession;
 import ru.otus.hw.webserver.service.AuthorizationService;
 
 import javax.servlet.*;
@@ -9,8 +10,10 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class AuthorizationFilter implements Filter {
+    private final String REQUESTED_RESOURCE_LOG_MSG = "Requested Resource: ";
+
+    private final AuthorizationService authorizationService;
     private ServletContext context;
-    private AuthorizationService authorizationService;
 
     public AuthorizationFilter(AuthorizationService authorizationService) {
         this.authorizationService = authorizationService;
@@ -29,11 +32,11 @@ public class AuthorizationFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) servletResponse;
 
         String uri = req.getRequestURI();
-        this.context.log("Requested Resource:" + uri);
+        this.context.log(REQUESTED_RESOURCE_LOG_MSG + uri);
 
-        HttpSession session = req.getSession(false);
-
-        if (session == null || !authorizationService.isSessionExists(session.getId())) {
+        HttpSession httpSession = req.getSession(false);
+        UserSession userSession = authorizationService.getUserSession(httpSession);
+        if (!authorizationService.isSessionExists(userSession)) {
             res.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } else {
             filterChain.doFilter(servletRequest, servletResponse);
