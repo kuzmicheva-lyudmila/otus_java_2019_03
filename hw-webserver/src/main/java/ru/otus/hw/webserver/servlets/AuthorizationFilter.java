@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static ru.otus.hw.webserver.server.LocalServer.PATH_LOGIN;
+
 public class AuthorizationFilter implements Filter {
     private final String REQUESTED_RESOURCE_LOG_MSG = "Requested Resource: ";
 
@@ -37,7 +39,7 @@ public class AuthorizationFilter implements Filter {
         HttpSession httpSession = req.getSession(false);
         UserSession userSession = authorizationService.getUserSession(httpSession);
         if (!authorizationService.isSessionExists(userSession)) {
-            res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            res.sendRedirect(PATH_LOGIN);
         } else {
             filterChain.doFilter(servletRequest, servletResponse);
         }

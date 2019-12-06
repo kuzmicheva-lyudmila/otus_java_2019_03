@@ -2,7 +2,6 @@ package ru.otus.hw.webserver.service.dbservice;
 
 import ru.otus.hw.webserver.models.User;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.List;
 
 public interface UserService {

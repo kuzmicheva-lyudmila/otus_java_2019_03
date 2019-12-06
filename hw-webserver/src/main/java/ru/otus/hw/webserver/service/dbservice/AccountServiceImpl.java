@@ -2,20 +2,18 @@ package ru.otus.hw.webserver.service.dbservice;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.hw.webserver.dao.AccountDaoImpl;
 import ru.otus.hw.webserver.dao.Dao;
 import ru.otus.hw.webserver.models.Account;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
 public class AccountServiceImpl implements AccountService {
-    private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
     private final Dao<Account, String> accountDao;
 
-    public AccountServiceImpl(Dao accountDao) {
+    public AccountServiceImpl(Dao<Account, String> accountDao) {
         this.accountDao = accountDao;
         createAdminAccount();
     }

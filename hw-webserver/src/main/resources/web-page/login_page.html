@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+    <form action="/login" method="POST">
+        Login: <input type="text" name="set_login"/>
+        Password: <input type="password" name="set_password"/>
+        <input type="submit" value="Sign in">
+    </form>
+
+    <p>Authorization status: ${authorization_status}</p>
+    <p>Login: ${login}</p>
+
+</body>
+</html>

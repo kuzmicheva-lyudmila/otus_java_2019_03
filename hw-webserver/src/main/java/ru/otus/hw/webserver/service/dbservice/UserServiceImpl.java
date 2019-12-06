@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.hw.webserver.service.cache.Cache;
 import ru.otus.hw.webserver.dao.Dao;
-import ru.otus.hw.webserver.dao.UserDaoImpl;
 import ru.otus.hw.webserver.models.User;
 
 import java.util.List;
@@ -16,12 +15,14 @@ public class UserServiceImpl implements UserService {
     private final Dao<User, Long> userDao;
     private final Cache<String, User> cache;
 
-    public UserServiceImpl(Cache cache, Dao<User, Long> userDao) {
+    public UserServiceImpl(Cache<String, User> cache, Dao<User, Long> userDao) {
         this.userDao = userDao;
         this.cache = cache;
 
         if (this.cache != null) {
-            this.cache.addListener((key, value, action) -> logger.info("key: {}, value: {}, action: {}", key, value, action));
+            this.cache.addListener(
+                    (key, value, action) -> logger.info("key: {}, value: {}, action: {}", key, value, action)
+            );
             for (User user : this.userDao.loadAll()) {
                 this.cache.put(String.valueOf(user.getId()), user);
             }
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService {
         User user = null;
 
         if (this.cache != null) {
-            user = (User) cache.get(String.valueOf(id));
+            user = cache.get(String.valueOf(id));
         }
 
         if (user == null) {

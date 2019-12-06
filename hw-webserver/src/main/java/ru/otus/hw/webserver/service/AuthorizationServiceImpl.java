@@ -1,7 +1,6 @@
 package ru.otus.hw.webserver.service;
 
 import ru.otus.hw.webserver.models.Account;
-import ru.otus.hw.webserver.models.User;
 import ru.otus.hw.webserver.server.UserSession;
 import ru.otus.hw.webserver.service.dbservice.AccountService;
 
@@ -20,8 +19,11 @@ public class AuthorizationServiceImpl implements AuthorizationService{
 
     @Override
     public UserSession getUserSession(HttpSession httpSession) {
-        String id = httpSession.getId();
+        if (httpSession == null) {
+            return null;
+        }
 
+        String id = httpSession.getId();
         return sessionIdToAccount.get(id) == null
                 ? null
                 : new UserSession(id, sessionIdToAccount.get(id).getLogin());
@@ -29,7 +31,7 @@ public class AuthorizationServiceImpl implements AuthorizationService{
 
     @Override
     public boolean isSessionExists(UserSession userSession) {
-        return (userSession == null) ? false : isSessionExists(userSession.getId());
+        return (userSession != null) && isSessionExists(userSession.getId());
     }
 
     private boolean isSessionExists(String sessionId) {
